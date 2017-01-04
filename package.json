@@ -1,0 +1,17 @@
+{
+  "name": "elm-autocomplete",
+  "version": "1.0.0",
+  "description": "Elm written autocomplete component. Inspiration taken from Davd's Nolen blog post Comparative Literate Programming (http://swannodette.github.io/2013/08/17/comparative).",
+  "main": "main.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "elm",
+    "autocomplete"
+  ],
+  "author": "sztobar",
+  "license": "ISC"
+}
