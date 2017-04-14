@@ -1,12 +1,15 @@
 {
   "name": "elm-autocomplete",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Elm written autocomplete component. Inspiration taken from Davd's Nolen blog post Comparative Literate Programming (http://swannodette.github.io/2013/08/17/comparative).",
   "main": "main.js",
-  "dependencies": {},
+  "repository": "https://github.com/sztobar/elm-autocomplete.git",
+  "dependencies": {
+    "jsonp": "^0.2.1"
+  },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm build; sh init.sh"
   },
   "keywords": [
     "elm",

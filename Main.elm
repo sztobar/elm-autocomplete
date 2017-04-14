@@ -1,7 +1,6 @@
 port module Main exposing (..)
 
 import Html exposing (..)
-import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Json
@@ -67,8 +66,8 @@ liBackgroundColor : (Int, Maybe Int) -> String
 liBackgroundColor (i, highlighted) =
   case highlighted of
 
-    Just i' ->
-      if i == i' then
+    Just i_ ->
+      if i == i_ then
         "#ccccff"
       else
         "inherit"
@@ -92,36 +91,38 @@ escKey : Int
 escKey = 27
 
 -- DECODERS
-  
-keyCodeDecoder : Int -> Result String HighlightMsg
+
+keyCodeDecoder : Int -> Json.Decoder HighlightMsg
 keyCodeDecoder kc =
   if kc == downArrowKey then
-     Result.Ok Next
+     Json.succeed Next
 
   else if kc == upArrowKey then
-     Result.Ok Previous
+     Json.succeed Previous
 
   else if kc == enterKey then
-     Result.Ok SelectHighlighted
+     Json.succeed SelectHighlighted
 
   else if kc == escKey then
-     Result.Ok Clear
+     Json.succeed Clear
 
   else
-     Result.Err ""
+     Json.fail ""
 
 keyMsg : Json.Decoder HighlightMsg
 keyMsg =
-  Json.customDecoder keyCode keyCodeDecoder 
+  keyCode
+    |> Json.andThen keyCodeDecoder
 
 tabKeyMsg : Json.Decoder HighlightMsg
 tabKeyMsg =
-  Json.customDecoder keyCode (\kc ->
-    if kc == tabKey then
-      Result.Ok SelectHighlighted
-    else
-      keyCodeDecoder kc
-  )
+  keyCode
+    |> Json.andThen (\kc ->
+      if kc == tabKey then
+          Json.succeed SelectHighlighted
+      else
+          keyCodeDecoder kc
+    )
 
 -- EVENTS
 
@@ -154,7 +155,7 @@ view model =
       [ label [ style labelStyle ] [ text "Query:" ]
       , span [ style [ ("position", "relative") ] ]
         [ input [ style inputStyle
-                , type' "text"
+                , type_ "text"
                 , value model.value
                 , onInput Input
                 , onQueryKeyDown KeyDown (model.focused && (maybeToBoolean model.highlighted))
@@ -178,7 +179,7 @@ view model =
       [ label [ style labelStyle ] [ text "Some Field:" ]
       , span [ style [ ("position", "relative") ] ]
         [ input [ style inputStyle
-                , type' "text"] []
+                , type_ "text"] []
         ]
       ]
     ]
@@ -257,7 +258,7 @@ inputUpdate model val =
    , focused = False
    , highlighted = Nothing
   }
- 
+
 responseUpdate : Model -> Array String -> Model
 responseUpdate model items =
   { model
@@ -365,9 +366,9 @@ init =
   , mouseDown = Nothing
   }, Cmd.none)
 
-main : Program Never
+main : Program Never Model Msg
 main =
-  Html.program
+  program
     { init = init
     , view = view
     , update = update
